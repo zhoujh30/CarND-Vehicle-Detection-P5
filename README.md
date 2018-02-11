@@ -30,10 +30,10 @@ I started by reading in all the `vehicle` and `non-vehicle` images. I then explo
 
 Here is an example using the `YCrCb` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
-<p align="center">
-  <img src="./output_images/CarImageColorSpace.png">
-  <img src="./output_images/NonCarImageColorSpace.png">
-</p>
+|Car|Non-Car|
+|-------------|-------------|
+|![Car](./output_images/CarImageColorSpace.png)|![Non-Car](./output_images/NonCarImageColorSpace.png)|
+
 
 #### 2. Choose appropriate HOG parameters.
 
