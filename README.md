@@ -24,11 +24,9 @@ The code for this step is contained in the 2nd code cell of the [Jupyter noteboo
 
 I started by reading in all the `vehicle` and `non-vehicle` images. I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`). I grabbed random images from each of the two classes and displayed original images and `skimage.hog()` output here:
 
-<p align="center">
-  <img src="./output_images/CarImage.png">
-  <img src="./output_images/NonCarImage.png">
-</p>
-
+|Car|Non-Car|
+|-------------|-------------|
+|![Car](./output_images/CarImage.png)|![Non-Car](./output_images/NonCarImage.png)|
 
 Here is an example using the `YCrCb` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
@@ -65,11 +63,11 @@ I used Amazon Web Services to launch an EC2 GPU instance (g2.2xlarge) to train t
 
 ### Sliding Window Search
 
-#### 1.  Implement a sliding window search.  How did you decide what scales to search and how much to overlap windows?
+#### 1.  Implement a sliding window search. How did you decide what scales to search and how much to overlap windows?
 
 The code for this step can be found in 12th and 13th cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb).
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+
 
 ![alt text][image3]
 
