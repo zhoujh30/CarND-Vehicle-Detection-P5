@@ -13,43 +13,61 @@ In this project, my goal is to write a software pipeline to detect vehicles in a
 
 The code for these steps can be found in the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb).  
 
-Here are links to the labeled data for [vehicle](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles.zip) and [non-vehicle](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles.zip) examples to train the classifier.  These example images come from a combination of the [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/), and examples extracted from the project video itself.
+Here are links to the labeled data for [vehicle](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles.zip) and [non-vehicle](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles.zip) examples used to train the classifier.  These example images come from a combination of the [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/), and examples extracted from the project video itself.
 
 
 ### Histogram of Oriented Gradients (HOG)
 
-#### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
+#### 1.  Extract HOG features from the training images.
 
-The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
+The code for this step is contained in the 2nd code cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb).  
 
-I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
-
-![alt text][image1]
-
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
-
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+I started by reading in all the `vehicle` and `non-vehicle` images. I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`). I grabbed random images from each of the two classes and displayed original images and `skimage.hog()` output here:
 
 <p align="center">
   <img src="./output_images/CarImage.png">
-</p>
-
-<p align="center">
   <img src="./output_images/NonCarImage.png">
 </p>
 
 
-#### 2. Explain how you settled on your final choice of HOG parameters.
+Here is an example using the `YCrCb` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
-I tried various combinations of parameters and...
+<p align="center">
+  <img src="./output_images/CarImageColorSpace.png">
+  <img src="./output_images/NonCarImageColorSpace.png">
+</p>
 
-#### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
+#### 2. Choose appropriate HOG parameters.
 
-I trained a linear SVM using...
+I tried various combinations of parameters and settled on this choice of HOG parameters since this returns the best result:
+
+```
+color_space = 'YCrCb'
+spatial_size = (32, 32)
+hist_bins = 32
+orient = 9
+pix_per_cell = 8
+cell_per_block = 2
+hog_channel = 'ALL'
+spatial_feat = True
+hist_feat = True
+hog_feat = True
+```
+
+#### 3. Train a classifier using your selected HOG features.
+
+The code for this step can be found in 12th and 13th cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb).  
+
+I trained a linear SVM using [`sklearn LinearSVC`](http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html) with default setting of `square-hinge` loss function and `l2` penalty. 
+
+I used Amazon Web Services to launch an EC2 GPU instance (g2.2xlarge) to train the model. 
+
 
 ### Sliding Window Search
 
-#### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
+#### 1.  Implement a sliding window search.  How did you decide what scales to search and how much to overlap windows?
+
+The code for this step can be found in 12th and 13th cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb).
 
 I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
 
