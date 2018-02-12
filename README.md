@@ -61,50 +61,43 @@ I used Amazon Web Services to launch an EC2 GPU instance (g2.2xlarge) to train t
 
 ### Sliding Window Search
 
-#### 1.  Implement a sliding window search. How did you decide what scales to search and how much to overlap windows?
+#### 1.  Implement a sliding window search. 
 
-The code for this step can be found in 21st cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb). The function `find_cars()` is used to extract hog features once and then can be sub-sampled to get all of its overlaying windows. This returns images with detected vehicles but there are multiple detections on same vihicle. Here is an example:
+The code for this step can be found in 21st cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb). The function `find_cars()` is used to extract hog features once and then can be sub-sampled to get all of its overlaying windows. 
+
+`window = 64`, `pix_per_cell = 8` and `cell_per_block` define that 64 is the orginal sampling rate, with 8 cells and 8 pix per cell. `cells_per_step = 2` defines that the window step 2 cells each time. `scale = 1.5` defines the search scale and was initially used. This returns images with detected vehicles but there are multiple detections on same vihicle. Here is an example:
 
 <p align="center">
-  <img src="./output_images/CarDetection1.jpg">
+  <img src="./output_images/CarDetection1.png">
 </p>
 
 To combine overlapping detections and remove false positives, I added "heat" (+=1) for all pixels within windows where a positive detection is reported by the classifier:
 
 |Image with multiple detections|Heat-map|
 |-------------|-------------|
-|![Car](./output_images/CarDetection2.png)|![Heat-map](./output_images/CarDetection3.png)|
+|![Image with multiple detections](./output_images/CarDetection2.png)|![Heat-map](./output_images/CarDetection3.png)|
 
 
-#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+#### 2. Optimize the performance of the classifier
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+The code for this step can be found in 21st cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb). The function `detect_vehicles()` is used to process the images in pipeline. 
+
+Later in the output video, using initial `scale = 1.5` there are still some false positives showing up or vehicles not detected and bounding boxes are not stable. Ultimately I searched on three scales (`scale = 1`, `scale = 1.5`, and`scale = 2.5`) instead using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. Here are some examples:
+
+|Example Image 1|Example Image 2|
+|-------------|-------------|
+|![Example Image 1](./output_images/CarDetection4.png)|![Example Image 2](./output_images/CarDetection5.png)|
 
 
 ---
 
 ### Video Implementation
 
-#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+In the final video output, I applied the pipeline on video output from Project 4. Here's a [link to my video output](https://youtu.be/weLDYfWpUZQ) and below is an overview:
 
-
-#### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
-
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
-
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
-
-### Here are six frames and their corresponding heatmaps:
-
-![alt text][image5]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
-
+<p align="center">
+  <img src="./output_images/Output.gif">
+</p>
 
 
 ---
@@ -113,4 +106,8 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+1. Though with large improvement from the initial video output, the bounding box in the final output is still not stable enough. One approach to improve the detection performance is to calculate the running average of the bounding box through the time.
+
+2. Vehicle detection often failed when a vehicle was just entering the camera view (since the shape of vehicle is incomplete) or multiple vehicles overlapped each other. One way to improve this is to find more training data of these complicated scenarios and train the model again.
+
+3. Additionally, it would be great to categorize different types of vehicles detected because it might be helpful to other analysis like path prediction. Finding more training data with types labeled would definitely help, but also adjust the search window based on certain types of vehicles, e.g. trucks are usually slower and may appear more often on the right part of the view.
