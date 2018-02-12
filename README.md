@@ -15,6 +15,7 @@ The code for these steps can be found in the [Jupyter notebook](https://github.c
 
 Here are links to the labeled data for [vehicle](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles.zip) and [non-vehicle](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles.zip) examples used to train the classifier.  These example images come from a combination of the [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/), and examples extracted from the project video itself.
 
+---
 
 ### Histogram of Oriented Gradients (HOG)
 
@@ -28,11 +29,13 @@ I started by reading in all the `vehicle` and `non-vehicle` images. I then explo
 |-------------|-------------|
 |![Car](./output_images/CarImage.png)|![Non-Car](./output_images/NonCarImage.png)|
 
+
 Here is an example using the `YCrCb` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 |Car|Non-Car|
 |-------------|-------------|
 |![Car](./output_images/CarImageColorSpace.png)|![Non-Car](./output_images/NonCarImageColorSpace.png)|
+
 
 
 #### 2. Choose appropriate HOG parameters.
@@ -58,6 +61,7 @@ The code for this step can be found in 12th and 13th cell of the [Jupyter notebo
 
 I used Amazon Web Services to launch an EC2 GPU instance (g2.2xlarge) to train the model. 
 
+---
 
 ### Sliding Window Search
 
@@ -65,7 +69,7 @@ I used Amazon Web Services to launch an EC2 GPU instance (g2.2xlarge) to train t
 
 The code for this step can be found in 21st cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb). The function `find_cars()` is used to extract hog features once and then can be sub-sampled to get all of its overlaying windows. 
 
-`window = 64`, `pix_per_cell = 8` and `cell_per_block` define that 64 is the orginal sampling rate, with 8 cells and 8 pix per cell. `cells_per_step = 2` defines that the window step 2 cells each time. `scale = 1.5` defines the search scale and was initially used. This returns images with detected vehicles but there are multiple detections on same vihicle. Here is an example:
+`window = 64`, `pix_per_cell = 8` and `cell_per_block` define that 64 is the orginal sampling rate, with 8 cells and 8 pix per cell. `cells_per_step = 2` defines that the window step 2 cells each time. `scale = 1.5` defines the search scale and was initially used. This returns images with detected vehicles but there are multiple detections on same vehicle. Here is an example:
 
 <p align="center">
   <img src="./output_images/CarDetection1.png">
@@ -82,7 +86,7 @@ To combine overlapping detections and remove false positives, I added "heat" (+=
 
 The code for this step can be found in 21st cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb). The function `detect_vehicles()` is used to process the images in pipeline. 
 
-Later in the output video, using initial `scale = 1.5` there are still some false positives showing up or vehicles not detected and bounding boxes are not stable. Ultimately I searched on three scales (`scale = 1`, `scale = 1.5`, and`scale = 2.5`) instead using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. Here are some examples:
+Later in the output video, when using initial `scale = 1.5`, there are still some false positives showing up or vehicles not detected and bounding boxes are not stable. Ultimately I searched on three scales (`scale = 1`, `scale = 1.5`, and`scale = 2.5`) instead using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. Here are some examples:
 
 |Example Image 1|Example Image 2|
 |-------------|-------------|
@@ -103,8 +107,6 @@ In the final video output, I applied the pipeline on video output from Project 4
 ---
 
 ### Discussion
-
-#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 1. Though with large improvement from the initial video output, the bounding box in the final output is still not stable enough. One approach to improve the detection performance is to calculate the running average of the bounding box through the time.
 
