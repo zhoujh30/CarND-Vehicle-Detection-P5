@@ -54,9 +54,7 @@ hog_feat = True
 
 #### 3. Train a classifier using your selected HOG features.
 
-The code for this step can be found in 12th and 13th cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb).  
-
-I trained a linear SVM using [`sklearn LinearSVC`](http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html) with default setting of `square-hinge` loss function and `l2` penalty. 
+The code for this step can be found in 12th and 13th cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb). I trained a linear SVM using [`sklearn.svm.LinearSVC`](http://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html) with default setting of `square-hinge` loss function and `l2` penalty. 
 
 I used Amazon Web Services to launch an EC2 GPU instance (g2.2xlarge) to train the model. 
 
@@ -65,17 +63,24 @@ I used Amazon Web Services to launch an EC2 GPU instance (g2.2xlarge) to train t
 
 #### 1.  Implement a sliding window search. How did you decide what scales to search and how much to overlap windows?
 
-The code for this step can be found in 12th and 13th cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb).
+The code for this step can be found in 21st cell of the [Jupyter notebook](https://github.com/zhoujh30/CarND-Vehicle-Detection-P5/blob/master/Vehicle_Detection.ipynb). The function `find_cars()` is used to extract hog features once and then can be sub-sampled to get all of its overlaying windows. This returns images with detected vehicles but there are multiple detections on same vihicle. Here is an example:
 
+<p align="center">
+  <img src="./output_images/CarDetection1.jpg">
+</p>
 
+To combine overlapping detections and remove false positives, I added "heat" (+=1) for all pixels within windows where a positive detection is reported by the classifier:
 
-![alt text][image3]
+|Image with multiple detections|Heat-map|
+|-------------|-------------|
+|![Car](./output_images/CarDetection2.png)|![Heat-map](./output_images/CarDetection3.png)|
+
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
 
-![alt text][image4]
+
 ---
 
 ### Video Implementation
